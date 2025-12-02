@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "A Quasar Project",
   "productName": "Quasar App",
-  "author": "Andrés Felipe Zuluaga Martinez <afzuluaga96@gmail.com>",
+  "author": "Andrés Zuluaga <afzuluaga96@gmail.com>",
   "type": "module",
   "private": true,
   "scripts": {
