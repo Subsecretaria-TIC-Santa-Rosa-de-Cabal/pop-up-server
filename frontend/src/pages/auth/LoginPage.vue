@@ -1,19 +1,18 @@
 <template>
-  <q-page padding>
-    <IndexComponent />
+  <q-page class="row items-center justify-evenly">
+    <LoginComponent />
   </q-page>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-
-import IndexComponent from 'src/components/index/IndexComponent.vue';
+import LoginComponent from 'src/components/auth/LoginComponent.vue';
 
 export default defineComponent({
-  name: 'IndexPage',
+  name: 'LoginPage',
 
   components: {
-    IndexComponent,
+    LoginComponent,
   },
 
   setup() {

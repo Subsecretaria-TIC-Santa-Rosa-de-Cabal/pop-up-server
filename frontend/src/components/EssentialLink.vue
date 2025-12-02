@@ -1,5 +1,5 @@
 <template>
-  <q-item clickable :to="{ name: routeName }" :active="$route.name == routeName">
+  <q-item clickable tag="a" target="_blank" :href="link">
     <q-item-section v-if="icon" avatar>
       <q-icon :name="icon" />
     </q-item-section>
@@ -14,15 +14,15 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
-export interface EssentialRouteProps {
+export interface EssentialLinkProps {
   title: string;
   caption?: string;
-  routeName?: string;
+  link?: string;
   icon?: string;
 }
 
 export default defineComponent({
-  name: 'EssentialRouteComponent',
+  name: 'EssentialLink',
   props: {
     title: {
       type: String,
@@ -34,7 +34,7 @@ export default defineComponent({
       default: '',
     },
 
-    routeName: {
+    link: {
       type: String,
       default: '#',
     },
