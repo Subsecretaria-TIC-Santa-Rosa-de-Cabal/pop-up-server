@@ -13,12 +13,13 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 from routers.auth_router import auth_router
 from routers.dependency_router import dependency_router
+from routers.device_router import device_router
 
 
 app = FastAPI(
     title="POPUP API",
     description="POPUP API",
-    version="0.0.2",
+    version="0.0.3",
     deprecated=False
 )
 
@@ -62,5 +63,11 @@ app.include_router(
     dependency_router,
     prefix="/api/dependency",
     tags=["Dependency"],
+    deprecated=False
+)
+app.include_router(
+    device_router,
+    prefix="/api/device",
+    tags=["Device"],
     deprecated=False
 )

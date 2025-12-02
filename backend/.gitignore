@@ -179,3 +179,5 @@ users.json
 roles.json
 dependencies.json
 devices.json
+private_key.pem
+public_key.pem
