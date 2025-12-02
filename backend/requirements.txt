@@ -1,5 +1,7 @@
 bcrypt
+cryptography
 fastapi[standard]
 gunicorn
 PyJWT
 python-dotenv
+requests
