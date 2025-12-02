@@ -177,3 +177,5 @@ pyrightconfig.json
 
 users.json
 roles.json
+dependencies.json
+devices.json

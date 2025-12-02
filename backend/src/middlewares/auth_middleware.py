@@ -65,8 +65,5 @@ async def get_current_user(
 
     if current_user is None:
         raise UserNotAuthenticated()
-    
-    if current_user.blocked is True:
-        raise UserBlocked()
 
     return current_user
