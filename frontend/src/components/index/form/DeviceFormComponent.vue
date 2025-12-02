@@ -1,11 +1,23 @@
 <template>
   <div class="q-col-gutter-md">
     <div>
-      <q-input outlined dense v-model="mainStore.deviceFormData.name" label="Nombre"></q-input>
+      <q-input
+        outlined
+        dense
+        v-model="mainStore.deviceFormData.name"
+        label="Nombre"
+        :rules="[(val) => !!val || 'Obligatorio']"
+      ></q-input>
     </div>
 
     <div>
-      <q-input outlined dense v-model="mainStore.deviceFormData.ip" label="IP"></q-input>
+      <q-input
+        outlined
+        dense
+        v-model="mainStore.deviceFormData.ip"
+        label="IP"
+        :rules="[(val) => !!val || 'Obligatorio']"
+      ></q-input>
     </div>
 
     <div>
@@ -18,10 +30,9 @@
         use-chips
         stack-label
         label="Dependencia"
+        :rules="[(val) => !!val || 'Obligatorio']"
       />
     </div>
-
-    <div><q-btn class="full-width" color="primary" label="Registrar Dispositivo"></q-btn></div>
   </div>
 </template>
 

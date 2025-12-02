@@ -40,8 +40,12 @@
       <div class="q-pa-xs col-xs-12 col-sm-12 col-md-12 col-lg-6">
         <q-card flat bordered>
           <q-card-section :horizontal="$q.screen.gt.xs" class="row q-pa-none">
-            <q-card-section class="col-xs-12 col-sm-4 col-md-3">
-              <q-img class="rounded-borders" src="https://cdn.quasar.dev/img/parallax2.jpg" />
+            <q-card-section class="col-xs-12 col-sm-3 col-md-2">
+              <q-img
+                class="rounded-borders"
+                ratio="1"
+                src="https://cdn.quasar.dev/img/parallax2.jpg"
+              />
             </q-card-section>
             <q-card-section class="col">
               <div><q-badge class="text-bold q-pa-xs">Programado</q-badge></div>
@@ -52,7 +56,7 @@
               </div>
 
               <div class="row q-gutter-x-lg q-mt-sm">
-                <div><q-icon name="event"></q-icon> 01 nov 2025 10:00 AM</div>
+                <div><q-icon name="event"></q-icon> 01 nov 2025</div>
                 <div><q-icon name="alarm"></q-icon> 09:00 AM</div>
                 <div><q-icon name="desktop_windows"></q-icon> Todos los dispositivos</div>
               </div>

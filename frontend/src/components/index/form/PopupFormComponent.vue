@@ -1,7 +1,13 @@
 <template>
   <div class="q-col-gutter-md">
     <div>
-      <q-input outlined dense v-model="mainStore.popupFormData.title" label="Título"></q-input>
+      <q-input
+        outlined
+        dense
+        v-model="mainStore.popupFormData.title"
+        label="Título"
+        :rules="[(val) => !!val || 'Obligatorio']"
+      ></q-input>
     </div>
 
     <div>
@@ -10,6 +16,7 @@
         dense
         v-model="mainStore.popupFormData.description"
         label="Descripción"
+        :rules="[(val) => !!val || 'Obligatorio']"
       ></q-input>
     </div>
 
@@ -22,7 +29,12 @@
     </div>
 
     <div>
-      <q-input outlined dense v-model="mainStore.popupFormData.date">
+      <q-input
+        outlined
+        dense
+        v-model="mainStore.popupFormData.date"
+        :rules="[(val) => !!val || 'Obligatorio']"
+      >
         <template v-slot:prepend>
           <q-icon name="event" class="cursor-pointer">
             <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -54,7 +66,7 @@
     </div>
 
     <div class="text-bold text-h6">Dispositivos</div>
-    <q-toggle v-model="selectAllDevices" label="Todos los dispositivos"></q-toggle>
+    <!-- <q-toggle v-model="selectAllDevices" label="Todos los dispositivos"></q-toggle> -->
     <q-select
       outlined
       dense
@@ -64,19 +76,13 @@
       use-chips
       stack-label
       label="Dispositivos Destino"
-      v-if="!selectAllDevices"
+      :rules="[(val) => !!val || 'Obligatorio']"
     />
-
-    <div>
-      <q-separator></q-separator>
-    </div>
-
-    <div><q-btn class="full-width" color="primary" label="Crear Pop-up"></q-btn></div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 import { useMainStore } from 'src/stores/main-store';
 
 export default defineComponent({
@@ -89,9 +95,7 @@ export default defineComponent({
   setup() {
     const mainStore = useMainStore();
 
-    const selectAllDevices = ref(false);
-
-    return { mainStore, selectAllDevices };
+    return { mainStore };
   },
 });
 </script>

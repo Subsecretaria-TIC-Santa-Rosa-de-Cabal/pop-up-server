@@ -11,24 +11,27 @@
           <div class="text-bold">{{ 'Admin' }} ({{ 'Administrador' }})</div>
         </div>
         <q-btn color="negative" flat dense icon="refresh" @click="$router.go(0)" />
-        <q-btn color="negative" flat dense icon="logout" aria-label="Logout" @click="logout" />
+        <q-btn
+          color="negative"
+          flat
+          dense
+          icon="logout"
+          aria-label="Logout"
+          @click="confirmLogout"
+        />
       </q-toolbar>
       <q-separator></q-separator>
     </q-header>
 
-    <q-drawer show-if-above v-model="mainStore.showFormDrawer" side="right" bordered>
-      <div class="q-ma-md" v-if="mainStore.tabPage == 'popups'">
-        <div class="text-bold text-h6 q-mb-md">Crear Pop-up</div>
-        <PopupFormComponent />
-      </div>
-      <div class="q-ma-md" v-else-if="mainStore.tabPage == 'dependencies'">
-        <div class="text-bold text-h6 q-mb-md">Registrar Dependencia</div>
-        <DependencyFormComponent />
-      </div>
-      <div class="q-ma-md" v-else-if="mainStore.tabPage == 'devices'">
-        <div class="text-bold text-h6 q-mb-md">Registrar Dispositivo</div>
-        <DeviceFormComponent />
-      </div>
+    <q-drawer
+      :width="400"
+      :breakpoint="1200"
+      show-if-above
+      v-model="mainStore.showFormDrawer"
+      side="right"
+      bordered
+    >
+      <ManagerFormCreateComponent />
     </q-drawer>
 
     <q-page-container>
@@ -46,21 +49,22 @@
 import { defineComponent, onMounted, ref } from 'vue';
 
 import { useMainStore } from 'src/stores/main-store';
-import PopupFormComponent from 'src/components/index/form/PopupFormComponent.vue';
-import DependencyFormComponent from 'src/components/index/form/DependencyFormComponent.vue';
-import DeviceFormComponent from 'src/components/index/form/DeviceFormComponent.vue';
+
 import { useRouter } from 'vue-router';
+import { getAccesToken, removeSessionStorage } from 'src/modules/api/session';
+
+import ManagerFormCreateComponent from 'src/components/index/form/ManagerFormCreateComponent.vue';
+import { useQuasar } from 'quasar';
 
 export default defineComponent({
   name: 'MainLayout',
 
   components: {
-    PopupFormComponent,
-    DependencyFormComponent,
-    DeviceFormComponent,
+    ManagerFormCreateComponent,
   },
 
   setup() {
+    const $q = useQuasar();
     const $router = useRouter();
     const mainStore = useMainStore();
 
@@ -68,13 +72,24 @@ export default defineComponent({
     const rightDrawerOpen = ref(false);
 
     const guard = () => {
-      if (localStorage.getItem('acces-token')) return;
+      if (getAccesToken()) return;
       logout();
     };
 
     const logout = () => {
-      localStorage.removeItem('acces-token');
+      removeSessionStorage();
       void $router.push({ name: 'LoginPage' });
+    };
+
+    const confirmLogout = () => {
+      $q.dialog({
+        title: '¿Cerrar sesión?',
+        // message: 'Would you like to turn on the wifi?',
+        cancel: true,
+        persistent: false,
+      }).onOk(() => {
+        logout();
+      });
     };
 
     onMounted(() => {
@@ -88,7 +103,8 @@ export default defineComponent({
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
       rightDrawerOpen,
-      logout,
+
+      confirmLogout,
     };
   },
 });

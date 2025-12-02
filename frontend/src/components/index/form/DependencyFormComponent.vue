@@ -1,29 +1,15 @@
 <template>
-  <q-form @submit.prevent="submit">
-    <div class="q-col-gutter-md">
-      <div>
-        <q-input
-          outlined
-          dense
-          v-model="mainStore.dependencyFormData.name"
-          label="Nombre"
-        ></q-input>
-      </div>
-
-      <div>
-        <q-input
-          outlined
-          dense
-          type="tel"
-          :mask="'#'.repeat(2)"
-          v-model="mainStore.dependencyFormData.deviceCount"
-          label="Cantidad de Dispositivos"
-        ></q-input>
-      </div>
-
-      <div><q-btn class="full-width" color="primary" label="Registrar dependencia"></q-btn></div>
+  <div class="q-col-gutter-md">
+    <div>
+      <q-input
+        outlined
+        dense
+        v-model="mainStore.dependencyFormData.name"
+        label="Nombre"
+        :rules="[(val) => !!val || 'Obligatorio']"
+      ></q-input>
     </div>
-  </q-form>
+  </div>
 </template>
 
 <script lang="ts">
@@ -40,9 +26,7 @@ export default defineComponent({
   setup() {
     const mainStore = useMainStore();
 
-    const submit = () => {};
-
-    return { mainStore, submit };
+    return { mainStore };
   },
 });
 </script>
