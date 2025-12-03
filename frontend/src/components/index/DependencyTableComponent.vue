@@ -65,7 +65,7 @@
                       v-close-popup
                       class="text-negative"
                       @click="confirmDeleteDependency(props.row)"
-                      :disable="props.row.devices_count"
+                      :disable="props.row.devices_count > 0"
                     >
                       <q-item-section avatar><q-icon name="delete"></q-icon></q-item-section>
 
@@ -107,7 +107,6 @@ import { defineComponent, ref } from 'vue';
 import { useQuasar } from 'quasar';
 
 import { useMainStore } from 'src/stores/main-store';
-import { apiDependencyEditPatch } from 'src/modules/api/dependency/apiDependencyEditPatch';
 import type { IDependency } from 'src/modules/interfaces/dependency';
 
 export default defineComponent({
@@ -139,7 +138,7 @@ export default defineComponent({
 
     const handlerEditDependency = async () => {
       try {
-        await apiDependencyEditPatch(mainStore.dependencyFormData);
+        await mainStore.editDependency();
         $q.notify({
           message: 'Dependencia editada',
           type: 'positive',

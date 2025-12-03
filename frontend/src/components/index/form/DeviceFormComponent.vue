@@ -14,9 +14,23 @@
       <q-input
         outlined
         dense
-        v-model="mainStore.deviceFormData.ip"
+        v-model="mainStore.deviceFormData.IP"
         label="IP"
         :rules="[(val) => !!val || 'Obligatorio']"
+        :disable="!!mainStore.deviceFormData.identifier"
+      ></q-input>
+    </div>
+
+    <div>
+      <q-input
+        outlined
+        dense
+        v-model="mainStore.deviceFormData.port"
+        label="Puerto"
+        type="tel"
+        mask="##########"
+        :rules="[(val) => !!val || 'Obligatorio']"
+        :disable="!!mainStore.deviceFormData.identifier"
       ></q-input>
     </div>
 
@@ -24,11 +38,12 @@
       <q-select
         outlined
         dense
-        v-model="mainStore.popupTargets"
-        multiple
-        :options="['1', '2']"
-        use-chips
-        stack-label
+        v-model="mainStore.deviceFormData.dependency_identifier"
+        :options="mainStore.dependencies"
+        option-label="name"
+        option-value="identifier"
+        map-options
+        emit-value
         label="Dependencia"
         :rules="[(val) => !!val || 'Obligatorio']"
       />
@@ -50,7 +65,12 @@ export default defineComponent({
   setup() {
     const mainStore = useMainStore();
 
-    return { mainStore };
+    const getDependencies = async () => {
+      await mainStore.getDependencies();
+    };
+    if (!mainStore.dependencies.length) void getDependencies();
+
+    return { mainStore, getDependencies };
   },
 });
 </script>

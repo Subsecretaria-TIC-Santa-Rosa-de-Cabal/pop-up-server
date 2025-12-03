@@ -20,14 +20,10 @@
     <div class="text-bold text-h6 q-mb-md">
       {{ mainStore.dependencyFormData.identifier ? 'Editar' : 'Registrar' }} Dependencia
     </div>
-    <q-form @submit.prevent="submitDependencyCreate">
+    <q-form @submit.prevent="submitDependency">
       <DependencyFormComponent />
       <div class="q-mt-md row justify-between">
-        <q-btn
-          color="negative"
-          label="cancelar"
-          @click="mainStore.unsetEditDependencyFormData"
-        ></q-btn>
+        <q-btn color="negative" label="cancelar" @click="mainStore.unsetDependencyFormData"></q-btn>
         <q-btn
           color="primary"
           :label="
@@ -40,16 +36,16 @@
   </div>
 
   <div class="q-ma-md" v-else-if="mainStore.tabPage == 'devices'">
-    <div class="text-bold text-h6 q-mb-md">Registrar Dispositivo</div>
-    <q-form @submit.prevent="submitDeviceCreate">
+    <div class="text-bold text-h6 q-mb-md">
+      {{ mainStore.deviceFormData.identifier ? 'Editar' : 'Registrar' }} Dispositivo
+    </div>
+    <q-form @submit.prevent="submitDevice">
       <DeviceFormComponent />
       <div class="q-mt-md row justify-between">
-        <q-btn color="negative" label="cancelar" @click="false"></q-btn>
+        <q-btn color="negative" label="cancelar" @click="mainStore.unsetDeviceFormData"></q-btn>
         <q-btn
           color="primary"
-          :label="
-            (mainStore.dependencyFormData.identifier ? 'Editar' : 'Registrar') + ' dispositivo'
-          "
+          :label="(mainStore.deviceFormData.identifier ? 'Editar' : 'Registrar') + ' dispositivo'"
           type="submit"
         ></q-btn>
       </div>
@@ -66,7 +62,6 @@ import DependencyFormComponent from './DependencyFormComponent.vue';
 import DeviceFormComponent from './DeviceFormComponent.vue';
 
 import { useQuasar } from 'quasar';
-import { apiDeviceCreatePost } from 'src/modules/api/device/apiDeviceCreatePost';
 import { apiPopupCreatePost } from 'src/modules/api/popup/apiPopupCreatePost';
 
 export default defineComponent({
@@ -86,28 +81,29 @@ export default defineComponent({
       try {
         await apiPopupCreatePost(mainStore.popupFormData);
         $q.notify({
-          message: 'Dependencia registrada',
+          message: 'Completado',
           type: 'positive',
         });
       } catch {
         $q.notify({
-          message: 'Error al crear el Popup',
+          message: 'Error',
           type: 'negative',
         });
       }
     };
 
-    const submitDependencyCreate = async () => {
+    const submitDependency = async () => {
       try {
         $q.loading.show();
-        await mainStore.createDependency();
+        if (mainStore.dependencyFormData.identifier) await mainStore.editDependency();
+        else await mainStore.createDependency();
         $q.notify({
-          message: 'Dependencia registrada',
+          message: 'Completado',
           type: 'positive',
         });
       } catch {
         $q.notify({
-          message: 'Error al registrar la dependencia',
+          message: 'Error',
           type: 'negative',
         });
       } finally {
@@ -115,18 +111,23 @@ export default defineComponent({
       }
     };
 
-    const submitDeviceCreate = async () => {
+    const submitDevice = async () => {
       try {
-        await apiDeviceCreatePost(mainStore.dependencyFormData);
+        if (mainStore.deviceFormData.identifier) await mainStore.editDevice();
+        else await mainStore.createDevice();
+        $q.notify({
+          message: 'Completado',
+          type: 'positive',
+        });
       } catch {
         $q.notify({
-          message: 'Error al registrar el dispositivo',
+          message: 'Error',
           type: 'negative',
         });
       }
     };
 
-    return { mainStore, submitCreatePopup, submitDependencyCreate, submitDeviceCreate };
+    return { mainStore, submitCreatePopup, submitDependency, submitDevice };
   },
 });
 </script>
