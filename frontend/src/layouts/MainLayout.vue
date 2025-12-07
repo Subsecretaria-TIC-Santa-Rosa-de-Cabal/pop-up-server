@@ -4,7 +4,10 @@
       <q-toolbar>
         <!-- <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" /> -->
 
-        <q-icon color="primary" text-color="white" name="desktop_windows" size="md"></q-icon>
+        <!-- <q-icon color="primary" text-color="white" name="desktop_windows" size="md"></q-icon> -->
+        <q-avatar square>
+          <q-img :ratio="1" fit="contain" src="logos/logo_icon.png"></q-img>
+        </q-avatar>
         <q-toolbar-title class="text-black"> Sistema de Pop-ups Corporativos</q-toolbar-title>
 
         <div class="q-mx-md text-black">

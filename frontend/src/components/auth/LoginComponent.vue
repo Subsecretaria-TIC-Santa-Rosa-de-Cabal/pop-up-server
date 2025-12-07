@@ -1,13 +1,20 @@
 <template>
-  <div>
-    <div class="column items-center q-mb-xl">
-      <div class="q-mb-md">
-        <q-avatar color="primary" text-color="white" icon="desktop_windows" size="xl" />
-      </div>
-      <div class="text-bold">Sistema de Pop-ups Corporativos</div>
-      <div>Gestión centralizada de notificaciones empresariales</div>
+  <!-- <q-avatar color="primary" text-color="white" icon="desktop_windows" size="xl" /> -->
+  <div class="column absolute-full justify-center items-center">
+    <div>
+      <q-img
+        :ratio="16 / 9"
+        height="auto"
+        width="200px"
+        fit="contain"
+        src="logos/ALC_MARCA_VERDE.png"
+      ></q-img>
     </div>
-    <q-card style="width: 400px">
+
+    <div class="text-bold">Sistema de Pop-ups Corporativos</div>
+    <div class="q-mb-md">Gestión centralizada de notificaciones empresariales</div>
+
+    <q-card style="max-width: 400px" class="q-ma-md">
       <q-card-section>
         <div class="text-bold text-h6">Iniciar sesión</div>
         <div class="text-grey">
