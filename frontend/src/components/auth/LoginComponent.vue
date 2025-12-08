@@ -1,13 +1,20 @@
 <template>
-  <div>
-    <div class="column items-center q-mb-xl">
-      <div class="q-mb-md">
-        <q-avatar color="primary" text-color="white" icon="desktop_windows" size="xl" />
-      </div>
-      <div class="text-bold">Sistema de Pop-ups Corporativos</div>
-      <div>Gestión centralizada de notificaciones empresariales</div>
+  <!-- <q-avatar color="primary" text-color="white" icon="desktop_windows" size="xl" /> -->
+  <div class="column absolute-full justify-center items-center">
+    <div>
+      <q-img
+        :ratio="16 / 9"
+        height="auto"
+        width="200px"
+        fit="contain"
+        src="logos/ALC_MARCA_VERDE.png"
+      ></q-img>
     </div>
-    <q-card style="width: 400px">
+
+    <div class="text-bold">Sistema de Pop-ups Corporativos</div>
+    <div class="q-mb-md">Gestión centralizada de notificaciones empresariales</div>
+
+    <q-card style="max-width: 400px" class="q-ma-md">
       <q-card-section>
         <div class="text-bold text-h6">Iniciar sesión</div>
         <div class="text-grey">
@@ -23,6 +30,7 @@
               outlined
               dense
               v-model="hostInput"
+              @blur="hostInput = hostInput.replace(/\/$/, '')"
               :rules="[(val) => !!val || 'Obligatorio']"
             />
           </div>
@@ -57,6 +65,13 @@
 </template>
 
 <script lang="ts">
+import { useQuasar } from 'quasar';
+
+import { apiLoginPost } from 'src/modules/api/auth/login';
+import { getApiHost, setApiHost } from 'src/modules/api/configHost';
+import type { IApiError } from 'src/modules/api/makeRequest';
+import { setSessionStorage } from 'src/modules/api/session';
+import { translateErrorCodeToMessage } from 'src/modules/api/translateErrorCodeToMessage';
 import { defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -64,27 +79,40 @@ export default defineComponent({
   name: 'LoginComponent',
 
   setup() {
+    const $q = useQuasar();
     const $router = useRouter();
 
-    const hostInput = ref('');
+    const hostInput = ref(getApiHost() || '');
     const username = ref('');
     const password = ref('');
 
-    const getHost = () => {
-      hostInput.value = localStorage.getItem('serverHost') || '';
-    };
-    getHost();
-
-    const handlerLogin = () => {
-      const currentHost = localStorage.getItem('serverHost') || '';
-
-      if (currentHost === '') {
+    const handlerLogin = async () => {
+      if (hostInput.value === '') {
         alert('Por favor, configure el host del servidor antes de iniciar sesión.');
         return;
       }
-      localStorage.setItem('acces-token', username.value);
-      localStorage.setItem('serverHost', hostInput.value);
-      void $router.push({ name: 'IndexPage' });
+
+      try {
+        const authResponse = await apiLoginPost(username.value, password.value, hostInput.value);
+
+        setSessionStorage(authResponse);
+        setApiHost(hostInput.value);
+
+        $q.notify({
+          message: 'Inició sesión',
+          type: 'positive',
+        });
+
+        setTimeout(() => {
+          void $router.push({ name: 'IndexPage' });
+        }, 100);
+      } catch (error) {
+        const codeError = (error as IApiError).error_code;
+        $q.notify({
+          message: translateErrorCodeToMessage(codeError) || 'Error desconocido o de conexión',
+          type: 'negative',
+        });
+      }
     };
 
     return { username, password, hostInput, handlerLogin };

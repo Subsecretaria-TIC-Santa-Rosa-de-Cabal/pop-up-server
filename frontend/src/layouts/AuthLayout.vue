@@ -46,13 +46,13 @@ export default defineComponent({
     const showHostDialog = ref(false);
 
     const getHost = () => {
-      currentHost.value = localStorage.getItem('serverHost') || '';
+      currentHost.value = localStorage.getItem('server-host') || '';
       hostInput.value = currentHost.value;
     };
     getHost();
 
     const setServerHost = () => {
-      localStorage.setItem('serverHost', hostInput.value);
+      localStorage.setItem('server-host', hostInput.value);
       currentHost.value = hostInput.value;
       showHostDialog.value = false;
     };

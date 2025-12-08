@@ -20,7 +20,7 @@
       round
       unelevated
       color="primary"
-      icon="menu"
+      :icon="mainStore.showFormDrawer ? 'remove' : 'add'"
       @click="mainStore.showFormDrawer = !mainStore.showFormDrawer"
     ></q-btn>
   </div>
