@@ -73,7 +73,7 @@ async def create_device(
                 )
             )
             device_data = json.loads(plaintext.decode('utf-8'))
-            if 'hostname' not in device_data or 'mac' not in device_data or 'operating_system' not in device_data:
+            if 'key' not in device_data or 'mac' not in device_data or 'operating_system' not in device_data:
                 raise CorruptedDevice()
             
             new_device = {
@@ -84,6 +84,7 @@ async def create_device(
                 "name": parameters.name,
                 "IP": parameters.IP,
                 "port": parameters.port,
+                "key": device_data.get('key'),
                 "dependency_identifier": str(parameters.dependency_identifier),
                 "status": "ONLINE",
                 "last_connection": datetime.now().isoformat(),

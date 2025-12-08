@@ -179,5 +179,7 @@ users.json
 roles.json
 dependencies.json
 devices.json
+popups.json
 private_key.pem
 public_key.pem
+.images/
