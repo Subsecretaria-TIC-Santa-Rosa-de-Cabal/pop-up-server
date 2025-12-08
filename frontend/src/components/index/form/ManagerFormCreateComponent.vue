@@ -1,7 +1,8 @@
 <template>
   <div class="q-ma-md" v-if="mainStore.tabPage == 'popups'">
     <div class="text-bold text-h6 q-mb-md">
-      {{ mainStore.popupFormData.identifier ? 'Editar' : 'Crear' }} Pop-up
+      <!-- {{ mainStore.popupFormData ? 'Editar' : 'Crear' }} Pop-up -->
+      Lanazar Pop-up
     </div>
     <q-form @submit.prevent="submitCreatePopup">
       <PopupFormComponent />
@@ -9,7 +10,7 @@
         <q-btn color="negative" label="cancelar" @click="false"></q-btn>
         <q-btn
           color="primary"
-          :label="(mainStore.dependencyFormData.identifier ? 'Editar' : 'Registrar') + ' Popup'"
+          :label="(mainStore.dependencyFormData.identifier ? 'Editar' : 'Lanzar') + ' Popup'"
           type="submit"
         ></q-btn>
       </div>
@@ -62,7 +63,6 @@ import DependencyFormComponent from './DependencyFormComponent.vue';
 import DeviceFormComponent from './DeviceFormComponent.vue';
 
 import { useQuasar } from 'quasar';
-import { apiPopupCreatePost } from 'src/modules/api/popup/apiPopupCreatePost';
 
 export default defineComponent({
   name: 'ManagerFormCreateComponent',
@@ -79,7 +79,7 @@ export default defineComponent({
 
     const submitCreatePopup = async () => {
       try {
-        await apiPopupCreatePost(mainStore.popupFormData);
+        await mainStore.createPopUp();
         $q.notify({
           message: 'Completado',
           type: 'positive',

@@ -4,9 +4,10 @@ import {
   type IDependencyCreate,
 } from 'src/modules/api/dependency/apiDependencyCreatePost';
 import type { IDeviceCreate } from 'src/modules/api/device/apiDeviceCreatePost';
-import type { IPopupCreate } from 'src/modules/api/popup/apiPopupCreatePost';
+import { apiPopupCreatePost, type IPopupCreate } from 'src/modules/api/popup/apiPopupCreatePost';
 import type { IDependency } from 'src/modules/interfaces/dependency';
 import type { IDevice } from 'src/modules/interfaces/device';
+import type { IPopUp } from 'src/modules/interfaces/popUp';
 
 import { apiDependencyDelete } from 'src/modules/api/dependency/apiDependencyDelete';
 import { apiDependencyEditPatch } from 'src/modules/api/dependency/apiDependencyEditPatch';
@@ -15,12 +16,14 @@ import { apiDeviceCreatePost } from 'src/modules/api/device/apiDeviceCreatePost'
 import { apiDeviceEditPatch } from 'src/modules/api/device/apiDeviceEditPatch';
 import { apiDeviceGet } from 'src/modules/api/device/apiDeviceGet';
 import { apiDeviceDelete } from 'src/modules/api/device/apiDeviceDelete';
+import { apiPopupGet } from 'src/modules/api/popup/apiPopupGet';
+import { fileToBase64 } from 'src/utils/fileToBase64';
 
 const popupUploadFile: File | null = null;
 
 export const useMainStore = defineStore('mainStore', {
   state: () => ({
-    popupList: [],
+    popupList: [] as IPopUp[],
     popupFormData: {} as IPopupCreate,
     popupUploadFile,
     popupTargets: [] as string[],
@@ -40,6 +43,29 @@ export const useMainStore = defineStore('mainStore', {
   // },
 
   actions: {
+    findDependencyById(dependencyId: string): IDependency | undefined {
+      return this.dependencies.find((dep) => dep.identifier === dependencyId);
+    },
+
+    //#region Pop-ups
+    unsetPopupFormData() {
+      this.popupFormData = {} as IPopupCreate;
+    },
+
+    async createPopUp() {
+      const file = this.popupUploadFile ? await fileToBase64(this.popupUploadFile) : null;
+      const res = await apiPopupCreatePost(this.popupFormData, file?.split(',')[1] || undefined);
+      if (res) {
+        this.popupList.push(res);
+        this.unsetPopupFormData();
+      }
+    },
+    async getPopUps() {
+      this.popupList = await apiPopupGet();
+    },
+
+    //#endregion
+
     //#region Dependencias
     setEditDependencyFormData(dependencyData: IDependency) {
       this.dependencyFormData = dependencyData;

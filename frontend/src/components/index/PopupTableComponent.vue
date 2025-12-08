@@ -1,6 +1,6 @@
 <template>
   <q-toolbar>
-    <q-toolbar-title>Pop-ups Programados ({{ rows.length || '0' }})</q-toolbar-title>
+    <q-toolbar-title>Pop-ups Lanzados ({{ mainStore.popupList.length || '0' }})</q-toolbar-title>
     <q-space></q-space>
     <q-input borderless dense debounce="300" v-model="filter" placeholder="Buscar...">
       <template v-slot:append>
@@ -14,7 +14,7 @@
     flat
     bordered
     :card-container-class="'cardContainerClass'"
-    :rows="rows"
+    :rows="mainStore.popupList"
     :columns="[
       { name: 'name', required: true, label: 'Nombre', align: 'left', field: 'name' },
       {
@@ -24,12 +24,20 @@
         align: 'left',
         field: 'description',
       },
+      {
+        name: 'date',
+        required: true,
+        label: 'fecha',
+        align: 'left',
+        field: (row) => row.date,
+        format: (val) => `${val}`,
+      },
     ]"
-    row-key="name"
+    row-key="identifier"
     :filter="filter"
     :pagination="{
-      sortBy: 'name',
-      descending: false,
+      sortBy: 'date',
+      descending: true,
       page: 1,
       rowsPerPage: 0,
     }"
@@ -44,25 +52,37 @@
               <q-img
                 class="rounded-borders"
                 ratio="1"
-                src="https://cdn.quasar.dev/img/parallax2.jpg"
+                :src="handlerGetImage(props.row.identifier)"
+                placeholder-src="https://cdn.quasar.dev/img/parallax2.jpg"
               />
             </q-card-section>
             <q-card-section class="col">
-              <div><q-badge class="text-bold q-pa-xs">Programado</q-badge></div>
+              <div>
+                <q-badge class="text-bold q-pa-xs" color="positive">Lanzado</q-badge>
+              </div>
               <div class="text-h5 q-mt-sm q-mb-xs">{{ props.row.name }}</div>
 
               <div class="text-caption">
                 {{ props.row.description }}
               </div>
-
+              {{ props.row.date }}
               <div class="row q-gutter-x-lg q-mt-sm">
-                <div><q-icon name="event"></q-icon> 01 nov 2025</div>
-                <div><q-icon name="alarm"></q-icon> 09:00 AM</div>
-                <div><q-icon name="desktop_windows"></q-icon> Todos los dispositivos</div>
+                <div><q-icon name="event"></q-icon> {{ props.row.date?.split('T')[0] }}</div>
+                <div>
+                  <q-icon name="alarm"></q-icon>
+                  {{ props.row.date?.split('T')[1]?.split('.')[0] }}
+                </div>
+                <div>
+                  <q-icon name="desktop_windows"></q-icon>
+                  {{
+                    mainStore.findDependencyById(props.row.dependency_identifier)?.name ||
+                    'Todos los dispositivos'
+                  }}
+                </div>
               </div>
             </q-card-section>
 
-            <q-card-actions vertical>
+            <!-- <q-card-actions vertical>
               <q-btn flat round icon="more_vert">
                 <q-menu>
                   <q-list style="min-width: 200px">
@@ -88,7 +108,7 @@
                   </q-list>
                 </q-menu>
               </q-btn>
-            </q-card-actions>
+            </q-card-actions> -->
           </q-card-section>
         </q-card>
       </div>
@@ -97,6 +117,8 @@
 </template>
 
 <script lang="ts">
+import { getApiHost } from 'src/modules/api/configHost';
+import { useMainStore } from 'src/stores/main-store';
 import { defineComponent, ref } from 'vue';
 
 export default defineComponent({
@@ -105,45 +127,27 @@ export default defineComponent({
   setup() {
     const filter = ref('');
 
-    const rows = ref([
-      {
-        id: '1',
-        name: 'Actualización de Seguridad Importante',
-        description:
-          'Se requiere reiniciar su computadora para aplicar las actualizaciones de seguridad críticas. Por favor, guarde su trabajo y reinicie antes del fin del día.',
-      },
-      {
-        id: '2',
-        name: 'Actualización de Seguridad Importante',
-        description:
-          'Se requiere reiniciar su computadora para aplicar las actualizaciones de seguridad críticas. Por favor, guarde su trabajo y reinicie antes del fin del día.',
-      },
-      {
-        id: '3',
-        name: 'Actualización de Seguridad Importante',
-        description:
-          'Se requiere reiniciar su computadora para aplicar las actualizaciones de seguridad críticas. Por favor, guarde su trabajo y reinicie antes del fin del día.',
-      },
-      {
-        id: '4',
-        name: 'Actualización de Seguridad Importante',
-        description:
-          'Se requiere reiniciar su computadora para aplicar las actualizaciones de seguridad críticas. Por favor, guarde su trabajo y reinicie antes del fin del día.',
-      },
-      {
-        id: '5',
-        name: 'Actualización de Seguridad Importante',
-        description:
-          'Se requiere reiniciar su computadora para aplicar las actualizaciones de seguridad críticas. Por favor, guarde su trabajo y reinicie antes del fin del día.',
-      },
-      {
-        id: '6',
-        name: 'Actualización de Seguridad Importante',
-        description:
-          'Se requiere reiniciar su computadora para aplicar las actualizaciones de seguridad críticas. Por favor, guarde su trabajo y reinicie antes del fin del día.',
-      },
-    ]);
-    return { filter, rows };
+    const mainStore = useMainStore();
+
+    const loadingDependencyTable = ref(false);
+
+    const handlerGetDevices = async () => {
+      try {
+        loadingDependencyTable.value = true;
+        await mainStore.getPopUps();
+      } catch {
+        //
+      } finally {
+        loadingDependencyTable.value = false;
+      }
+    };
+    void handlerGetDevices();
+
+    const handlerGetImage = (popup_identifier: string) => {
+      return getApiHost() + `/api/popup/images/${popup_identifier}`;
+    };
+
+    return { filter, mainStore, handlerGetImage };
   },
 });
 </script>

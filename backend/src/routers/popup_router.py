@@ -121,7 +121,7 @@ async def create_popup(
     )
 
 @popup_router.get("/images/{popup_identifier}")
-def get_popup_image(popup_identifier: UUID, current_user = Depends(get_current_user)):
+def get_popup_image(popup_identifier: UUID):
     filename = f"{popup_identifier}.png"
     IMAGES_DIR = Path(".images")
     safe_path = (IMAGES_DIR / Path(filename)).resolve()

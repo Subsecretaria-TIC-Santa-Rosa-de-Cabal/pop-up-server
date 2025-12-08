@@ -1,8 +1,6 @@
 <template>
   <q-toolbar>
-    <q-toolbar-title>
-      Pop-ups Programados ({{ mainStore.dependencies.length || '0' }})</q-toolbar-title
-    >
+    <q-toolbar-title> Dependencias ({{ mainStore.dependencies.length || '0' }})</q-toolbar-title>
     <q-space></q-space>
     <q-input borderless dense debounce="300" v-model="filter" placeholder="Buscar...">
       <template v-slot:append>
